@@ -1,0 +1,30 @@
+meta {
+    name: Crea demo
+    type: http
+    seq: 1
+}
+
+post {
+    url: {{baseUrl}}/demo
+    body: json
+    auth: none
+}
+
+body:json {
+    {
+        "nome": "prova"
+    }
+}
+
+script:post-response {
+    bru.setVar("demoId", res.body.id);
+}
+
+tests {
+    tests("risponde 201", function() {
+        expect(res.status).to.equal(201);
+    });
+    tests("restituisce un id", function() {
+        expect(res.body.id).to.not.be.undefined;
+    });
+}
