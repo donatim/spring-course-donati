@@ -14,6 +14,19 @@ services:
       interval: 5s
       retries: 10
 
+  postgres-flyway:
+    image: postgres:16
+    container_name: postgres-flyway
+    environment:
+      POSTGRES_DB: postgres-flyway
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_flyway_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
   mongo:
     image: mongo:8.0
     container_name: spring-course-mongodb
@@ -56,3 +69,4 @@ services:
 volumes:
   pgdata:
   dati-mongodb:
+  postgres_flyway_data:
