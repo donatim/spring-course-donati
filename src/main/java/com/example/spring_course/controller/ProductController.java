@@ -4,6 +4,9 @@ import com.example.spring_course.controller.model.request.ProductRequest;
 import com.example.spring_course.controller.model.response.ProductResponse;
 import com.example.spring_course.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,16 +33,19 @@ public class ProductController {
         return service.findAll();
     }
 
+    @Cacheable(value = "products", key = "#id")
     @GetMapping("/user/{id}")
     public ProductResponse findById(@PathVariable String id) {
         return service.findById(id);
     }
 
+    @CachePut(value = "products", key = "#id")
     @PutMapping("/admin/update/{id}")
     public ProductResponse update(@PathVariable String id, @Valid @RequestBody ProductRequest request) {
         return service.update(id, request);
     }
 
+    @CacheEvict(value = "products", key = "#id")
     @DeleteMapping("/admin/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String id) {

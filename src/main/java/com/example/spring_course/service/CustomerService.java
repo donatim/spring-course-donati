@@ -6,7 +6,6 @@ import com.example.spring_course.repository.model.CustomerEntity;
 import com.example.spring_course.service.dto.CustomerDTO;
 import com.example.spring_course.service.mapper.CustomerMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
