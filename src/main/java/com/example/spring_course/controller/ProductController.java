@@ -2,24 +2,27 @@ package com.example.spring_course.controller;
 
 import com.example.spring_course.controller.model.request.ProductRequest;
 import com.example.spring_course.controller.model.response.ProductResponse;
+import com.example.spring_course.service.ProductAsyncService;
 import com.example.spring_course.service.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/catalog")
 public class ProductController {
 
     private final ProductService service;
+    private final ProductAsyncService productAsyncService;
 
-    public ProductController(ProductService service) {
+    public ProductController(ProductService service, ProductAsyncService productAsyncService) {
         this.service = service;
+        this.productAsyncService = productAsyncService;
     }
 
     @PostMapping("/admin/create")
@@ -33,19 +36,28 @@ public class ProductController {
         return service.findAll();
     }
 
-    @Cacheable(value = "products", key = "#id")
     @GetMapping("/user/{id}")
     public ProductResponse findById(@PathVariable String id) {
         return service.findById(id);
     }
 
-    @CachePut(value = "products", key = "#id")
+    @GetMapping("/user/{id}/async")
+    public CompletableFuture<ProductResponse> findByIdAsync(@PathVariable String id) {
+
+        log.info("CONTROLLER START - thread={}", Thread.currentThread().getName());
+
+        CompletableFuture<ProductResponse> future = productAsyncService.findById(id);
+
+        log.info("CONTROLLER END - thread={}", Thread.currentThread().getName());
+
+        return future;
+    }
+
     @PutMapping("/admin/update/{id}")
     public ProductResponse update(@PathVariable String id, @Valid @RequestBody ProductRequest request) {
         return service.update(id, request);
     }
 
-    @CacheEvict(value = "products", key = "#id")
     @DeleteMapping("/admin/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String id) {

@@ -5,6 +5,9 @@ import com.example.spring_course.controller.model.response.ProductResponse;
 import com.example.spring_course.repository.ProductMongoRepository;
 import com.example.spring_course.repository.model.ProductDocument;
 import com.example.spring_course.service.mapper.ProductMongoMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -37,12 +40,14 @@ public class ProductService {
                 .toList();
     }
 
+    @Cacheable(value = "products", key = "#id")
     public ProductResponse findById(String id) {
         ProductDocument document = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,"Product not found: " + id));
         return mapper.toResponse(document);
     }
 
+    @CachePut(value = "products", key = "#id")
     public ProductResponse update(String id, ProductRequest request) {
         ProductDocument document = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException( NOT_FOUND, "Product not found: " + id));
@@ -54,6 +59,7 @@ public class ProductService {
         return mapper.toResponse(updated);
     }
 
+    @CacheEvict(value = "products", key = "#id")
     public void delete(String id) {
         if (!repository.existsById(id)) {
             throw new ResponseStatusException(NOT_FOUND, "Product not found: " + id);
