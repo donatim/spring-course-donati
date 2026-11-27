@@ -1,0 +1,8 @@
+externalCode,name,description,price,category,brand
+SKU-001,MacBook Air M4,Notebook Apple,1499.99,notebook,Apple
+SKU-002,Galaxy S25,Smartphone Samsung,899.90,smartphone,Samsung
+SKU-003,LG UltraFine 27,Monitor 4K,379.00,monitor,LG
+SKU-004,Mechanical Keyboard,RGB Keyboard,129.90,accessory,Keychron
+SKU-005,Invalid Product,Price non valida,-10.00,accessory,Demo
+SKU-006,ThinkPad X1,Notebook Lenovo,1799.00,notebook,Lenovo
+SKU-007,Broken Product,Prezzo non numerico,abc,accessory,Demo
